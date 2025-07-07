@@ -3,6 +3,7 @@
     <head>
         <title>WaveSign Application</title>
         <h1>WaveSign</h1>
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <div>Teachable Machine Image Model</div>
@@ -10,7 +11,6 @@
             
 
             <form id = "image-upload-form">
-                <label for="image-upload">Upload an image:</label>
                 <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload(event)">
                 <img id = "uploaded-image" style = "display: none; max-width: 200px; margin-top: 10px;">
             </form>
@@ -24,6 +24,7 @@
 
         <div id="webcam-container"></div>
         <div id="label-container"></div>
+        <div id="prediction-box" style="font-size: 1.5em; font-weight: bold; margin-top: 16px; color: #2a7ae2;"></div>
         
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
@@ -64,11 +65,19 @@
             async function predict() {
                 // predict can take in an image, video or canvas html element
                 const prediction = await model.predict(webcam.canvas);
+                let maxProb = 0;
+                let maxClass = '';
                 for (let i = 0; i < maxPredictions; i++) {
                     const classPrediction =
                         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                     labelContainer.childNodes[i].innerHTML = classPrediction;
+                    if (prediction[i].probability > maxProb) {
+                        maxProb = prediction[i].probability;
+                        maxClass = prediction[i].className;
+                    }
                 }
+                document.getElementById("prediction-box").textContent =
+                    "Most likely: " + maxClass + " (" + maxProb.toFixed(2) + ")";
             }
 
             async function toggleWebcam() {
@@ -88,12 +97,20 @@
 
                 const prediction = await model.predict(imageElement);
                 labelContainer.innerHTML = "";
+                let maxProb = 0;
+                let maxClass = '';
                 for (let i = 0; i < maxPredictions; i++) {
                     const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                     const div = document.createElement("div");
                     div.innerHTML = classPrediction;
                     labelContainer.appendChild(div);
+                    if (prediction[i].probability > maxProb) {
+                        maxProb = prediction[i].probability;
+                        maxClass = prediction[i].className;
+                    }
                 }
+                document.getElementById("prediction-box").textContent =
+                    "Most likely: " + maxClass + " (" + maxProb.toFixed(2) + ")";
             }  
 
             let uploadedImage = null;
