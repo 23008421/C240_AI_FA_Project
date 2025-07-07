@@ -12,12 +12,10 @@
             <form id = "image-upload-form">
                 <label for="image-upload">Upload an image:</label>
                 <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload(event)">
-                <br><button id = "submit-button" type = "submit">Submit Image</button>
-                <br>
                 <img id = "uploaded-image" style = "display: none; max-width: 200px; margin-top: 10px;">
             </form>
 
-            <br><button type="button" onclick="resetPage()">Reset</button>
+
 
 
             <a href = "aslData.html">
@@ -171,9 +169,6 @@
 
             }
 
-            function resetPage() {
-                window.location.reload();
-            }
 
 
         </script>
