@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>WaveSign Application</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body style="text-align: center; margin: 0; padding: 0;">
+        <header style="display: flex; align-items: flex-end; padding: 20px 40px 20px 40px; background: linear-gradient(90deg, #77ceb7 0%, #0ba2bc 100%); box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 0; gap: 32px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <h1 style="font-size: 2.2em; margin: 0; color: #fff; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(11,162,188,0.15);">WaveSign</h1>
+                <div style="font-size: 1.1em; color: #eafaf7; margin-top: 4px; margin-bottom: 0; font-weight: 500; letter-spacing: 1px;">Teachable Machine Image Model</div>
+            </div>
+            <a href="mainFunction.html" style="text-decoration: none; align-self: flex-end; margin-left: 24px;">
+                <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Visual Translate</button>
+            </a>
+            <a href="aslData.html" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
+                <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">View ASL Images</button>
+            </a>
+            <a href="about.html" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
+                <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">About Us</button>
+            </a>
+        </header>
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 24px; margin-bottom: 8px;">
+            <img src="wavesign.jpg" alt="WaveSign Logo" id="wavesign-logo" style="width: 140px; height: auto; border-radius: 16px; border: 4px solid #fff; box-shadow: 0 4px 24px 0 rgba(11,162,188,0.15), 0 2px 6px rgba(0,0,0,0.10); background: #fff;">
+        </div>
+        <main style="max-width: 600px; margin: 0 auto;">
+            <button id="toggle-webcam" type="button" onclick="toggleWebcam()">Start/Stop</button>
+            <br>
+            <div id="webcam-container" style="margin: 0 auto;"></div>
+            <div id="label-container" style="margin: 0 auto;"></div>
+            <div id="prediction-box" style="font-size: 1.5em; font-weight: bold; margin-top: 16px; color: #2a7ae2;"></div>
+            <form id="image-upload-form" style="display: inline-block; margin-top: 24px;">
+                <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload(event)">
+                <img id="uploaded-image" style="display: none; max-width: 200px; margin-top: 10px;">
+            </form>
+            <br>
+            <button type="button" onclick="resetPage()">Reset</button>
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+        <script type="text/javascript">
+
+            // More API functions here:
+            // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+            // the link to your model provided by Teachable Machine export panel
+            const URL = "./My_Model/";
+
+            let model, webcam, labelContainer, maxPredictions;
+
+            // Load the image model and setup the webcam
+
+            async function loadModel() {
+                if (!model) {
+                    const modelURL = URL + "model.json";
+                    const metadataURL = URL + "metadata.json";
+                    model = await tmImage.load(modelURL, metadataURL);
+                    maxPredictions = model.getTotalClasses();
+                }
+
+                labelContainer = document.getElementById("label-container");
+                labelContainer.innerHTML = "";
+                for (let i = 0; i < maxPredictions; i++) {
+                    labelContainer.appendChild(document.createElement("div"));
+                }
+            }
+
+            async function loop() {
+                webcam.update(); // update the webcam frame
+                await predict();
+                window.requestAnimationFrame(loop);
+            }
+
+            // run the webcam image through the image model
+            async function predict() {
+                // predict can take in an image, video or canvas html element
+                const prediction = await model.predict(webcam.canvas);
+                let maxProb = 0;
+                let maxClass = '';
+                for (let i = 0; i < maxPredictions; i++) {
+                    const classPrediction =
+                        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                    labelContainer.childNodes[i].innerHTML = classPrediction;
+                    if (prediction[i].probability > maxProb) {
+                        maxProb = prediction[i].probability;
+                        maxClass = prediction[i].className;
+                    }
+                }
+                document.getElementById("prediction-box").textContent =
+                    "Most likely: " + maxClass + " (" + maxProb.toFixed(2) + ")";
+            }
+
+            async function toggleWebcam() {
+                const button = document.getElementById("toggle-webcam");
+
+                if (!webcam) {
+                    await startWebcam();
+                    button.textContent = "Start/Stop Webcam";
+                } else {
+                    stopWebcam();
+                    button.textContent = "Start/Stop Webcam";
+                }
+            }
+
+            async function predictImage(imageElement) {
+                await loadModel();
+
+                const prediction = await model.predict(imageElement);
+                labelContainer.innerHTML = "";
+                let maxProb = 0;
+                let maxClass = '';
+                for (let i = 0; i < maxPredictions; i++) {
+                    const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                    const div = document.createElement("div");
+                    div.innerHTML = classPrediction;
+                    labelContainer.appendChild(div);
+                    if (prediction[i].probability > maxProb) {
+                        maxProb = prediction[i].probability;
+                        maxClass = prediction[i].className;
+                    }
+                }
+                document.getElementById("prediction-box").textContent =
+                    "Most likely: " + maxClass + " (" + maxProb.toFixed(2) + ")";
+            }  
+
+            let uploadedImage = null;
+
+            function handleImageUpload(event) {
+                const file = event.target.files[0];
+                const imageElement = document.getElementById("uploaded-image");
+
+                if (!file) {
+                    alert("Please upload an image.");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageElement.src = e.target.result;
+                    imageElement.style.display = "block";
+
+                    // Stop and hide webcam if active
+                    if (webcam) {
+                        webcam.stop();
+                        webcam.canvas.remove();
+                        webcam = null;
+                    }
+
+                    imageElement.onload = async function() {
+                        await loadModel();
+                        await predictImage(imageElement);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+
+            document.getElementById("image-upload-form").addEventListener("submit", function(event) {
+                event.preventDefault(); 
+
+                const imageElement = document.getElementById("uploaded-image");
+
+                if (!imageElement || !imageElement.src || imageElement.style.display === "none") {
+                    alert("Please upload an image.");
+                    return;
+                }
+
+                predictImage(imageElement);
+
+            });
+
+            async function startWebcam() {
+                await loadModel();
+
+                const imageElement = document.getElementById("uploaded-image");
+                imageElement.style.display = "none";
+
+                if (webcam) return;
+
+                const flip = true;
+                webcam = new tmImage.Webcam(200, 200, flip);
+                await webcam.setup(); // request access to the webcam
+                await webcam.play();
+
+                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                window.requestAnimationFrame(loop);
+            }
+
+            function stopWebcam() {
+                if (webcam) {
+                    webcam.stop();
+                    webcam.canvas.remove();
+                    webcam = null;
+                }
+
+                document.getElementById("toggle-webcam").textContent = "Start Webcam";
+
+            }
+
+            function resetPage() {
+                window.location.reload();
+            }
+
+
+        </script>
+
+        <style>
+            @media (max-width: 600px) {
+                header { flex-direction: column !important; align-items: flex-start !important; padding: 16px 10px 10px 10px !important; gap: 10px !important; }
+                header h1 { font-size: 1.3em !important; }
+                header a button { font-size: 1em !important; padding: 8px 14px !important; }
+                #wavesign-logo { width: 60px !important; }
+            }
+        </style>
+        <div style="text-align:center;">
+          <a href="index.html" style="text-decoration: none; display: inline-block;">
+              <button type="button" style="font-size: 1.1em; padding: 10px 28px; background: #0ba2bc; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(11,162,188,0.10); transition: background 0.2s;">Back to Home</button>
+          </a>
+        </div>
+        <script src="https://cdn.botpress.cloud/webchat/v3.1/inject.js" defer></script>
+        <script src="https://files.bpcontent.cloud/2025/07/09/17/20250709171224-FMCTOBNP.js" defer></script>
+    </body>
+</html>
