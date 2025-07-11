@@ -15,19 +15,39 @@
         <a href="mainFunction.html" style="text-decoration: none; align-self: flex-end; margin-left: 24px;">
             <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Visual Translate</button>
         </a>
-        <a href="aslData.html" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
+        <a href="aslData.html" style="text-decoration: none, align-self: flex-end; margin-left: 12px;">
             <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">View ASL Images</button>
         </a>
         <a href="about.html" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
             <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">About Us</button>
         </a>
+        <a href="#" id="feedbackBtn" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
+            <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Feedback</button>
+        </a>
     </header>
-    <main style="max-width: 700px; margin: 48px auto 0 auto; background: #f7faf9; border-radius: 12px; box-shadow: 0 2px 8px rgba(11,162,188,0.07); padding: 32px 28px; font-size: 1.2em; color: #1a3a3a;">
+    <main id="mainContent" style="max-width: 700px; margin: 48px auto 0 auto; background: #f7faf9; border-radius: 12px; box-shadow: 0 2px 8px rgba(11,162,188,0.07); padding: 32px 28px; font-size: 1.2em; color: #1a3a3a;">
         <h2 style="color: #0ba2bc; font-size: 1.4em; letter-spacing: 1px;">Welcome to WaveSign</h2>
         <img src="bg gif.gif" alt="WaveSign Background Animation" style="width: 100%; max-width: 500px; border-radius: 10px; margin: 24px 0 16px 0; box-shadow: 0 2px 8px rgba(11,162,188,0.10);">
         <p>WaveSign is a website that translates sign language in real-time using your phone’s camera or uploaded images. It also teaches signs through an interactive hand sign gallery. This makes communication with the hearing-impaired easier and more accessible.</p>
     </main>
+    <main id="feedbackContent" style="max-width: 700px; margin: 48px auto 0 auto; background: #f7faf9; border-radius: 12px; box-shadow: 0 2px 8px rgba(11,162,188,0.07); padding: 32px 28px; font-size: 1.2em; color: #1a3a3a; display: none;">
+        <h3 style="color: #0ba2bc; font-size: 1.2em;">Feedback Bot</h3>
+        <p>This is a feedback bot. If you have anything you would like to share, let us know. We are happy to hear from you!</p>
+        <a href="https://cdn.botpress.cloud/webchat/v3.0/shareable.html?configUrl=https://files.bpcontent.cloud/2025/07/10/11/20250710114140-JR0E9W49.json" target="_blank" style="font-size: 1.1em; color: #0ba2bc; text-decoration: underline;">Open Feedback Bot</a>
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="index.html" style="text-decoration: none;">
+                <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #0ba2bc; border: 2px solid #0ba2bc; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Back to Home</button>
+            </a>
+        </div>
+    </main>
     <script src="https://cdn.botpress.cloud/webchat/v3.1/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2025/07/09/17/20250709171224-FMCTOBNP.js" defer></script>
+    <script>
+        document.getElementById('feedbackBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('feedbackContent').style.display = 'block';
+        });
+    </script>
 </body>
 </html>

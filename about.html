@@ -21,6 +21,9 @@
         <a href="about.html" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
             <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">About Us</button>
         </a>
+        <a href="#" id="feedbackBtn" style="text-decoration: none; align-self: flex-end; margin-left: 12px;">
+            <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid #fff; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Feedback</button>
+        </a>
     </header>
     <section id="about-us" style="max-width: 700px; margin: 32px auto 0 auto; background: #f7faf9; border-radius: 12px; box-shadow: 0 2px 8px rgba(11,162,188,0.07); padding: 24px 28px; font-size: 1.15em; color: #1a3a3a; text-align: left;">
         <h2 style="margin-top: 0; color: #0ba2bc; font-size: 1.3em; letter-spacing: 1px;">About Us</h2>
@@ -31,11 +34,28 @@
         </div>
         <div style="text-align:center;">
           <a href="index.html" style="text-decoration: none; display: inline-block;">
-              <button type="button" style="font-size: 1.1em; padding: 10px 28px; background: #0ba2bc; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(11,162,188,0.10); transition: background 0.2s;">Back to Home</button>
+              <button type="button" style="font-size: 1.1em; padding: 10px 28px; background: linear-gradient(90deg, #77ceb7 0%, #0ba2bc 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(11,162,188,0.10); transition: background 0.2s;">Back to Home</button>
           </a>
         </div>
     </section>
+    <main id="feedbackContent" style="max-width: 700px; margin: 48px auto 0 auto; background: #f7faf9; border-radius: 12px; box-shadow: 0 2px 8px rgba(11,162,188,0.07); padding: 32px 28px; font-size: 1.2em; color: #1a3a3a; display: none;">
+        <h3 style="color: #0ba2bc; font-size: 1.2em;">Feedback Bot</h3>
+        <p>This is a feedback bot. If you have anything you would like to share, let us know. We are happy to hear from you!</p>
+        <button onclick="window.open('https://cdn.botpress.cloud/webchat/v3.0/shareable.html?configUrl=https://files.bpcontent.cloud/2025/07/10/11/20250710114140-JR0E9W49.json', '_blank')" type="button" style="font-size: 1.1em; padding: 10px 28px; background: linear-gradient(90deg, #77ceb7 0%, #0ba2bc 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(11,162,188,0.10); transition: background 0.2s; margin-bottom: 8px; display: inline-block;">Open Feedback Bot</button>
+        <div style="text-align: center; margin-top: 16px;">
+            <a href="index.html" style="text-decoration: none;">
+                <button type="button" style="font-size: 1.1em; padding: 10px 22px; background: linear-gradient(90deg, #77ceb7 0%, #0ba2bc 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(11,162,188,0.10); transition: background 0.2s;">Back to Home</button>
+            </a>
+        </div>
+    </main>
     <script src="https://cdn.botpress.cloud/webchat/v3.1/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2025/07/09/17/20250709171224-FMCTOBNP.js" defer></script>
+    <script>
+        document.getElementById('feedbackBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('about-us').style.display = 'none';
+            document.getElementById('feedbackContent').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
